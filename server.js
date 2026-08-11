@@ -7,7 +7,7 @@ const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const ADMIN_PASSWORD = '#233830@MAN#';
+const ADMIN_PASSWORD = 'mypassword123';
 
 // Middleware
 app.use(cors());
@@ -58,7 +58,7 @@ app.post('/api/admin-login', (req, res) => {
     }
 });
 
-// API Endpoint: Get all products
+// API Endpoint: Get all products (sorted by display order ascending)
 app.get('/api/products', (req, res) => {
     fs.readFile(productsFile, 'utf8', (err, data) => {
         if (err) {
@@ -66,6 +66,7 @@ app.get('/api/products', (req, res) => {
         }
         try {
             const products = JSON.parse(data || '[]');
+            products.sort((a, b) => (parseInt(a.displayOrder) || 0) - (parseInt(b.displayOrder) || 0));
             res.json(products);
         } catch (parseErr) {
             res.json([]);
@@ -101,6 +102,7 @@ app.post('/api/products', upload.array('productImages', 3), (req, res) => {
             category: req.body.category || 'General',
             phone: req.body.phone || '',
             description: req.body.description || '',
+            displayOrder: parseInt(req.body.displayOrder) || 0,
             imageUrls: imageUrls
         };
 
