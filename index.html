@@ -10,7 +10,8 @@
         body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #FBFBFC; color: #333; }
         a { text-decoration: none; color: inherit; }
         
-        #header { background: linear-gradient(135deg, #15161D 0%, #222431 100%); padding: 20px 40px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); gap: 20px; flex-wrap: wrap; }
+        #header { background: linear-gradient(135deg, #15161D 0%, #222431 100%); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .header-top { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
         .logo { font-size: 28px; font-weight: 700; color: white; }
         .logo span { color: #D10024; }
 
@@ -19,9 +20,14 @@
         .search-btn { background: #D10024; color: white; border: none; padding: 0 15px; border-radius: 0 4px 4px 0; cursor: pointer; }
         .search-btn:hover { background: #b0001d; }
 
-        .saved-link { color: white; background: #222431; border: 1px solid #444; padding: 10px 15px; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .saved-link { color: white; background: #222431; border: 1px solid #444; padding: 10px 15px; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s; white-space: nowrap; }
         .saved-link:hover { background: #333648; }
         .saved-link i { color: #D10024; }
+
+        /* Category Navigation Bar */
+        .category-nav { background: #1a1c23; padding: 10px 40px; display: flex; gap: 15px; overflow-x: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        .cat-btn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .cat-btn:hover, .cat-btn.active { background: #D10024; color: white; }
 
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         h2 { text-transform: uppercase; margin-bottom: 30px; font-size: 24px; border-bottom: 2px solid #E4E7ED; padding-bottom: 10px; }
@@ -49,22 +55,35 @@
         .empty-state { text-align: center; padding: 60px; color: #8D99AE; font-size: 16px; grid-column: 1 / -1; }
 
         @media (max-width: 768px) {
-            #header { padding: 15px 20px; flex-direction: column; align-items: stretch; }
+            .header-top { padding: 15px 20px; flex-direction: column; align-items: stretch; }
             .search-bar { max-width: 100%; }
+            .category-nav { padding: 10px 20px; }
         }
     </style>
 </head>
 <body>
 
     <div id="header">
-        <div class="logo">E-Dire <span>Store</span></div>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search products by name, category, or description...">
-            <button class="search-btn"><i class="fa fa-search"></i></button>
+        <div class="header-top">
+            <div class="logo">E-Dire <span>Store</span></div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products by name, category, or description...">
+                <button class="search-btn"><i class="fa fa-search"></i></button>
+            </div>
+            <a href="saved.html" class="saved-link">
+                <i class="fa fa-heart"></i> Saved Products (<span id="savedCount">0</span>)
+            </a>
         </div>
-        <a href="saved.html" class="saved-link">
-            <i class="fa fa-heart"></i> Saved Products (<span id="savedCount">0</span>)
-        </a>
+        <!-- Category Navigation Menu -->
+        <div class="category-nav">
+            <button class="cat-btn active" onclick="filterByCategory('All', this)">All Products</button>
+            <button class="cat-btn" onclick="filterByCategory('Laptops', this)">Laptops</button>
+            <button class="cat-btn" onclick="filterByCategory('Smartphones', this)">Smartphones</button>
+            <button class="cat-btn" onclick="filterByCategory('Home Goods', this)">Home Goods</button>
+            <button class="cat-btn" onclick="filterByCategory('Clothing (Male)', this)">Clothing (Male)</button>
+            <button class="cat-btn" onclick="filterByCategory('Clothing (Female)', this)">Clothing (Female)</button>
+            <button class="cat-btn" onclick="filterByCategory('Electronics', this)">Electronics</button>
+        </div>
     </div>
 
     <div class="container">
@@ -76,12 +95,13 @@
 
     <script>
         let allProducts = [];
+        let currentCategory = 'All';
 
         async function fetchProducts() {
             try {
                 const response = await fetch('/api/products');
                 allProducts = await response.json();
-                displayProducts(allProducts);
+                applyFilters();
                 updateSavedCount();
             } catch (err) {
                 console.error('Failed to load products:', err);
@@ -94,7 +114,7 @@
             const savedItems = JSON.parse(localStorage.getItem('edire_saved_products') || '[]');
 
             if (!products || products.length === 0) {
-                container.innerHTML = '<div class="empty-state">No products found matching your search.</div>';
+                container.innerHTML = '<div class="empty-state">No products found matching your criteria.</div>';
                 return;
             }
 
@@ -126,15 +146,35 @@
             });
         }
 
-        // Search filtering logic
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            const filtered = allProducts.filter(p => 
-                (p.name && p.name.toLowerCase().includes(term)) ||
-                (p.category && p.category.toLowerCase().includes(term)) ||
-                (p.description && p.description.toLowerCase().includes(term))
-            );
+        // Combined filter logic for Category and Search Input
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = allProducts.filter(p => {
+                const matchesCategory = (currentCategory === 'All') || (p.category && p.category.toLowerCase() === currentCategory.toLowerCase());
+                const matchesSearch = (
+                    (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+                    (p.category && p.category.toLowerCase().includes(searchTerm)) ||
+                    (p.description && p.description.toLowerCase().includes(searchTerm))
+                );
+                return matchesCategory && matchesSearch;
+            });
+
             displayProducts(filtered);
+        }
+
+        window.filterByCategory = function(category, btnElement) {
+            currentCategory = category;
+            
+            // Update active state on buttons
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            applyFilters();
+        };
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            applyFilters();
         });
 
         // Save / Unsave product logic
@@ -151,7 +191,7 @@
             }
 
             localStorage.setItem('edire_saved_products', JSON.stringify(savedItems));
-            displayProducts(allProducts);
+            applyFilters();
             updateSavedCount();
         };
 
