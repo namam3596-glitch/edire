@@ -81,14 +81,18 @@
             </div>
             <div class="form-group">
                 <label>Category</label>
-                <select name="category">
-                    <option value="">Auto-Detect from Name / Description</option>
-                    <option value="Laptops">Laptops</option>
-                    <option value="Smartphones">Smartphones</option>
+                <select name="category" required>
+                    <option value="">Select Category</option>
+                    <optgroup label="Electronics">
+                        <option value="Laptops">Laptops</option>
+                        <option value="Smartphones">Smartphones</option>
+                        <option value="Electronics">Other Electronics</option>
+                    </optgroup>
+                    <optgroup label="Clothing">
+                        <option value="Clothing (Male)">Male Clothing</option>
+                        <option value="Clothing (Female)">Female Clothing</option>
+                    </optgroup>
                     <option value="Home Goods">Home Goods</option>
-                    <option value="Clothing (Male)">Clothing (Male)</option>
-                    <option value="Clothing (Female)">Clothing (Female)</option>
-                    <option value="Electronics">Electronics</option>
                 </select>
             </div>
             <div class="form-group">
@@ -104,13 +108,14 @@
                 <textarea name="description" placeholder="Enter product details, specs, or features..." rows="3"></textarea>
             </div>
             <div class="form-group">
-                <label>Display Order (Priority Number)</label>
+                <label>Display Order (Priority Number for Shuffling)</label>
                 <input type="number" name="displayOrder" value="0" placeholder="e.g., 1 for top placement">
                 <span class="form-hint">Lower numbers appear first on the storefront.</span>
             </div>
             <div class="form-group">
-                <label>Product Images (Upload up to 3 images)</label>
+                <label>Product Images (Upload up to 4 images)</label>
                 <input type="file" name="productImages" accept="image/*" multiple required>
+                <span class="form-hint">You can select up to 4 pictures simultaneously.</span>
             </div>
             <button type="submit" class="submit-btn">Publish to Catalog</button>
         </form>
