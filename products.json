@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1786288935142,
+    "name": "laptop",
+    "description": "",
+    "price": "3000",
+    "category": "Laptops",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786288935135-lap.webp"
+    ],
+    "sortOrder": 10
+  },
+  {
+    "id": 1786288988137,
+    "name": "Samsung s24",
+    "description": "",
+    "price": "14000 ETB",
+    "category": "Smartphones",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786288988130-s24.webp"
+    ]
+  },
+  {
+    "id": 1786289027415,
+    "name": "sofa",
+    "description": "",
+    "price": "15,000 ETB",
+    "category": "Home Goods",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786289027409-sopha.webp"
+    ],
+    "sortOrder": 1
+  },
+  {
+    "id": 1786289068569,
+    "name": "Headset",
+    "description": "",
+    "price": "2000 ETB",
+    "category": "Electronics",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786289068564-hea.webp"
+    ]
+  },
+  {
+    "id": 1786297669693,
+    "name": "Dress ",
+    "description": "",
+    "price": "200 ETB",
+    "category": "Clothing (Female)",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786297669687-women.webp"
+    ]
+  },
+  {
+    "id": 1786297709785,
+    "name": "Jacket",
+    "description": "",
+    "price": "500 ETB",
+    "category": "Clothing (Male)",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786297709779-mens.webp"
+    ]
+  },
+  {
+    "id": 1786463052648,
+    "name": "test",
+    "description": "",
+    "price": "3000 ETB",
+    "phone": "092422222",
+    "category": "Electronics",
+    "imageUrls": [
+      "http://localhost:3000/uploads/1786463052628-hea.webp"
+    ]
+  }
+]
