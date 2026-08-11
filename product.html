@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Dire | Product Details</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #FBFBFC; color: #333; }
+        a { text-decoration: none; color: #333; }
+        
+        #header { background-color: #d1220b; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 28px; font-weight: 700; color: white; }
+        .logo span { color: #D10024; }
+        .back-link { color: white; background: #D10024; padding: 10px 20px; border-radius: 4px; font-weight: bold; }
+
+        .details-container { max-width: 1000px; margin: 50px auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; gap: 40px; align-items: flex-start; }
+        
+        .product-image-box { flex: 1; text-align: center; }
+        .main-image-frame { background: #FBFBFC; padding: 20px; border: 1px solid #E4E7ED; border-radius: 8px; margin-bottom: 15px; height: 350px; display: flex; align-items: center; justify-content: center; }
+        .main-image-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .thumbnail-container { display: flex; gap: 10px; justify-content: center; }
+        .thumbnail { width: 70px; height: 70px; object-fit: contain; background: #FBFBFC; border: 2px solid #E4E7ED; border-radius: 4px; cursor: pointer; padding: 5px; transition: 0.2s; box-sizing: border-box; }
+        .thumbnail:hover, .thumbnail.active { border-color: #D10024; }
+
+        .product-info-box { flex: 1; }
+        .product-category { text-transform: uppercase; font-size: 13px; color: #D10024; margin-bottom: 10px; font-weight: bold; letter-spacing: 1px; }
+        .product-title { font-size: 28px; text-transform: uppercase; margin-top: 0; margin-bottom: 15px; color: #15161D; }
+        
+        .product-desc-title { font-weight: bold; text-transform: uppercase; font-size: 14px; margin-bottom: 8px; color: #333; border-bottom: 2px solid #E4E7ED; padding-bottom: 5px; }
+        .product-desc-text { font-size: 15px; color: #666; line-height: 1.6; margin-bottom: 25px; }
+        
+        .price-save-wrapper { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .catchy-price-box {
+            background: linear-gradient(135deg, #15161D 0%, #2c2d3a 100%);
+            color: white;
+            padding: 18px 25px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(209, 0, 36, 0.25);
+            border-left: 6px solid #D10024;
+        }
+        .price-label { font-size: 11px; text-transform: uppercase; color: #8D99AE; letter-spacing: 1.5px; margin-bottom: 4px; font-weight: bold; }
+        .price-value { font-size: 26px; font-weight: bold; color: #ffffff; }
+
+        .detail-save-btn { background: white; border: 2px solid #D10024; color: #D10024; padding: 15px 25px; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .detail-save-btn:hover, .detail-save-btn.saved { background: #D10024; color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <div class="logo">E-Dire <span>Store</span></div>
+        <a href="index.html" class="back-link"><i class="fa fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <div class="details-container" id="details-wrapper">
+        <p style="text-align: center; width: 100%; color: #8D99AE;">Loading product details...</p>
+    </div>
+
+    <script>
+        let currentProduct = null;
+
+        window.changeMainImage = function(imageUrl, thumbElement) {
+            document.getElementById('main-img').src = imageUrl;
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumbElement.classList.add('active');
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            document.getElementById('details-wrapper').innerHTML = '<h3 style="color: #D10024; text-align: center; width: 100%;">Error: No product selected.</h3>';
+        } else {
+            fetch(`http://localhost:3000/api/products/${productId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Product not found');
+                    return response.json();
+                })
+                .then(product => {
+                    currentProduct = product;
+                    const container = document.getElementById('details-wrapper');
+                    
+                    const images = (product.imageUrls && product.imageUrls.length > 0) 
+                        ? product.imageUrls 
+                        : ['https://via.placeholder.com/400x400?text=No+Image'];
+                    
+                    const descText = (product.description && product.description.trim() !== '') ? product.description : 'No description provided for this product.';
+                    const productPrice = product.price ? product.price : 'Contact for Price';
+                    const categoryText = product.category || 'Electronics';
+
+                    const savedItems = JSON.parse(localStorage.getItem('edire_saved_products')) || [];
+                    const isSaved = savedItems.some(item => item.id === product.id);
+                    const saveBtnClass = isSaved ? 'detail-save-btn saved' : 'detail-save-btn';
+                    const saveBtnText = isSaved ? 'Saved' : 'Save Product';
+
+                    let thumbnailsHTML = '';
+                    images.forEach((imgUrl, index) => {
+                        const activeClass = index === 0 ? 'active' : '';
+                        thumbnailsHTML += `<img src="${imgUrl}" class="thumbnail ${activeClass}" onclick="changeMainImage('${imgUrl}', this)" alt="Thumbnail ${index + 1}">`;
+                    });
+
+                    container.innerHTML = `
+                        <div class="product-image-box">
+                            <div class="main-image-frame">
+                                <img id="main-img" src="${images[0]}" alt="${product.name}">
+                            </div>
+                            <div class="thumbnail-container">
+                                ${thumbnailsHTML}
+                            </div>
+                        </div>
+                        <div class="product-info-box">
+                            <div class="product-category">${categoryText}</div>
+                            <h1 class="product-title">${product.name}</h1>
+                            
+                            <div class="product-desc-title">Product Description</div>
+                            <p class="product-desc-text">${descText}</p>
+                            
+                            <div class="price-save-wrapper">
+                                <div class="catchy-price-box">
+                                    <div class="price-label"><i class="fas fa-tag"></i> Store Price</div>
+                                    <div class="price-value">${productPrice}</div>
+                                </div>
+                                <button class="${saveBtnClass}" id="detail-save-trigger" onclick="toggleSaveCurrentProduct()">
+                                    ${saveBtnText}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching product:', error);
+                    document.getElementById('details-wrapper').innerHTML = '<h3 style="color: #D10024; text-align: center; width: 100%;">Product could not be found or has been removed.</h3>';
+                });
+        }
+
+        window.toggleSaveCurrentProduct = function() {
+            if (!currentProduct) return;
+            let savedItems = JSON.parse(localStorage.getItem('edire_saved_products')) || [];
+            const index = savedItems.findIndex(item => item.id === currentProduct.id);
+            const btn = document.getElementById('detail-save-trigger');
+
+            if (index > -1) {
+                savedItems.splice(index, 1);
+                btn.className = 'detail-save-btn';
+                btn.innerText = 'Save Product';
+            } else {
+                savedItems.push(currentProduct);
+                btn.className = 'detail-save-btn saved';
+                btn.innerText = 'Saved';
+            }
+            localStorage.setItem('edire_saved_products', JSON.stringify(savedItems));
+        };
+    </script>
+</body>
+</html>

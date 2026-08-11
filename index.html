@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Dire | Local Store</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #FBFBFC; color: #333; }
+        a { text-decoration: none; color: #da670a; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        
+        #top-header { background-color: #d65905; padding: 10px 0; }
+        .top-header-container { display: flex; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 15px; font-size: 12px; }
+        .top-header-links li { display: inline-block; margin-right: 15px; color: white; }
+        .top-header-links li i { color: #D10024; margin-right: 5px; }
+        .top-header-links li a { color: white; }
+
+        #header { background-color: #7a1c10; padding-top: 15px; padding-bottom: 15px; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        .logo { font-size: 36px; font-weight: 700; color: white; }
+        .logo span { color: #D10024; }
+
+        .search-bar { display: flex; flex: 1; margin: 0 50px; }
+        .search-bar select { border: none; padding: 10px; border-radius: 40px 0 0 40px; background: white; font-weight: 500; }
+        .search-bar input { flex: 1; border: none; padding: 10px 20px; outline: none; }
+        .search-bar button { background: #000000; color: white; border: none; padding: 10px 30px; border-radius: 0 40px 40px 0; font-weight: 700; cursor: pointer; }
+
+        .header-icons { display: flex; gap: 25px; color: white; text-align: center; font-size: 14px; }
+        .header-icons a { display: flex; flex-direction: column; align-items: center; color: white; cursor: pointer; }
+        .header-icons i { font-size: 18px; margin-bottom: 5px; color: #D10024; }
+
+        /* Navigation with Dropdowns and Icons */
+        #navigation { background: white; border-bottom: 2px solid #E4E7ED; padding: 15px 0; position: relative; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 15px; font-weight: 500; display: flex; gap: 30px; align-items: center; }
+        .nav-container > a, .dropdown > a { color: #333; transition: 0.2s color; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding-bottom: 5px; }
+        .nav-container a i { color: #D10024; font-size: 14px; }
+        .nav-container > a:hover, .nav-container > a.active, .dropdown > a:hover { color: #D10024; }
+
+        /* Dropdown Styling */
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; background-color: white; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); z-index: 100; border-radius: 4px; top: 100%; left: 0; border: 1px solid #E4E7ED; }
+        .dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
+        .dropdown-content a:hover { background-color: #fcfcfc; color: #D10024; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .section { max-width: 1200px; margin: 50px auto; padding: 0 15px; }
+        .section-title { font-size: 24px; text-transform: uppercase; margin-bottom: 30px; font-weight: 700; }
+        
+        #product-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
+        .product { background: white; border: 1px solid #E4E7ED; transition: 0.2s all; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .product:hover { box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); border-color: #D10024; }
+        
+        .product-img { width: 100%; height: 220px; padding: 20px; box-sizing: border-box; }
+        .product-img img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .save-product-btn { position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #E4E7ED; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; color: #555; transition: 0.2s; z-index: 5; text-transform: uppercase; }
+        .save-product-btn:hover { background: #f1f1f1; border-color: #ccc; }
+        .save-product-btn.saved { background: #D10024; color: white; border-color: #D10024; }
+
+        .product-body { padding: 15px; flex-grow: 1; }
+        .product-category { text-transform: uppercase; font-size: 12px; color: #8D99AE; margin-bottom: 5px; font-weight: bold; }
+        .product-name { text-transform: uppercase; font-size: 15px; font-weight: bold; margin: 5px 0 8px 0; }
+        .product-description { font-size: 13px; color: #666; margin-bottom: 12px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { color: #D10024; font-size: 18px; font-weight: bold; margin: 0; }
+        
+        .add-to-cart-btn { background: #D10024; color: white; border: none; padding: 10px 20px; text-transform: uppercase; font-weight: 700; border-radius: 40px; cursor: pointer; transition: 0.2s; width: 80%; margin: 0 auto 20px auto; display: block; }
+        .add-to-cart-btn:hover { background: #15161D; }
+    </style>
+</head>
+<body>
+
+    <div id="top-header">
+        <div class="top-header-container">
+            <ul class="top-header-links">
+                <li><i class="fa fa-phone"></i> +251 900 00 00 00</li>
+                <li><i class="fa fa-envelope"></i> contact@edire.com</li>
+                <li><i class="fa fa-map-marker-alt"></i> Dire Dawa, Ethiopia</li>
+            </ul>
+            <ul class="top-header-links">
+                <!-- Admin link hidden securely from public view -->
+            </ul>
+        </div>
+    </div>
+
+    <div id="header">
+        <div class="header-container">
+            <div class="logo">E-Dire<span>.</span></div>
+            
+            <div class="search-bar">
+                <select><option value="0">All Categories</option></select>
+                <input id="search-input" type="text" placeholder="Search products by name or details...">
+                <button id="search-btn"><i class="fa fa-search"></i></button>
+            </div>
+            
+            <div class="header-icons">
+                <a href="saved.html">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Saved Products</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation with Dropdowns and Icons -->
+    <nav id="navigation">
+        <div class="nav-container">
+            <a onclick="filterCategory('All', this)" class="active">Home <i class="fa fa-home"></i></a>
+            
+            <!-- Electronics Dropdown -->
+            <div class="dropdown">
+                <a onclick="filterCategory('Electronics', this)">Electronics <i class="fas fa-plug"></i> <i class="fa fa-caret-down" style="font-size: 10px; margin-left: 3px;"></i></a>
+                <div class="dropdown-content">
+                    <a onclick="filterCategory('Smartphones', this)">Smartphones <i class="fas fa-mobile-alt"></i></a>
+                    <a onclick="filterCategory('Laptops', this)">Laptops <i class="fas fa-laptop"></i></a>
+                </div>
+            </div>
+
+            <a onclick="filterCategory('Home Goods', this)">Home Goods <i class="fas fa-couch"></i></a>
+
+            <!-- Clothing Dropdown -->
+            <div class="dropdown">
+                <a onclick="filterCategory('Clothing', this)">Clothing <i class="fas fa-tshirt"></i> <i class="fa fa-caret-down" style="font-size: 10px; margin-left: 3px;"></i></a>
+                <div class="dropdown-content">
+                    <a onclick="filterCategory('Clothing (Male)', this)">Male <i class="fas fa-mars"></i></a>
+                    <a onclick="filterCategory('Clothing (Female)', this)">Female <i class="fas fa-venus"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="section">
+        <h3 class="section-title" id="section-heading">New Products</h3>
+        <div id="product-container"></div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let currentCategory = 'All';
+
+        fetch('http://localhost:3000/api/products')
+            .then(response => response.json())
+            .then(products => {
+                allProducts = products;
+                renderProducts(allProducts);
+            })
+            .catch(error => console.error('Error fetching products:', error));
+
+        function renderProducts(productsToRender) {
+            const container = document.getElementById('product-container');
+            container.innerHTML = '';
+            
+            if (productsToRender.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #8D99AE; padding: 40px;">No products found.</p>';
+                return;
+            }
+
+            const savedItems = JSON.parse(localStorage.getItem('edire_saved_products')) || [];
+
+            productsToRender.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product';
+                const imageSource = (product.imageUrls && product.imageUrls.length > 0) 
+                    ? product.imageUrls[0] 
+                    : 'https://via.placeholder.com/250x200?text=No+Image';
+                
+                const descText = (product.description && product.description.trim() !== '') 
+                    ? product.description 
+                    : 'No description provided.';
+
+                const categoryText = product.category || 'General';
+                const isSaved = savedItems.some(item => item.id === product.id);
+                const btnText = isSaved ? 'Saved' : 'Save';
+
+                card.innerHTML = `
+                    <button class="save-product-btn ${isSaved ? 'saved' : ''}" onclick="toggleSaveProduct(event, ${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                        ${btnText}
+                    </button>
+                    <div class="product-img">
+                        <img src="${imageSource}" alt="${product.name}">
+                    </div>
+                    <div class="product-body">
+                        <p class="product-category">${categoryText}</p>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${descText}</p>
+                        <div class="product-price">${product.price}</div>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="window.location.href='product.html?id=${product.id}'">
+                        <i class="fa fa-info-circle"></i> View Details
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.filterCategory = function(category, element) {
+            if (event) event.stopPropagation();
+            currentCategory = category;
+            
+            document.querySelectorAll('.nav-container > a, .dropdown-content a').forEach(a => a.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            document.getElementById('section-heading').innerText = category === 'All' ? 'New Products' : category;
+
+            applyFilters();
+        };
+
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            
+            let filtered = allProducts;
+
+            if (currentCategory !== 'All') {
+                if (currentCategory === 'Electronics') {
+                    filtered = filtered.filter(p => p.category === 'Smartphones' || p.category === 'Laptops' || p.category === 'Electronics');
+                } else if (currentCategory === 'Clothing') {
+                    filtered = filtered.filter(p => p.category && p.category.includes('Clothing'));
+                } else {
+                    filtered = filtered.filter(p => (p.category || '').toLowerCase() === currentCategory.toLowerCase());
+                }
+            }
+
+            if (query !== '') {
+                filtered = filtered.filter(product => 
+                    product.name.toLowerCase().includes(query) || 
+                    (product.description && product.description.toLowerCase().includes(query)) ||
+                    (product.category && product.category.toLowerCase().includes(query))
+                );
+            }
+
+            renderProducts(filtered);
+        }
+
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', applyFilters);
+
+        window.toggleSaveProduct = function(event, product) {
+            event.stopPropagation();
+            let savedItems = JSON.parse(localStorage.getItem('edire_saved_products')) || [];
+            const index = savedItems.findIndex(item => item.id === product.id);
+            
+            const btn = event.currentTarget;
+
+            if (index > -1) {
+                savedItems.splice(index, 1);
+                btn.classList.remove('saved');
+                btn.innerText = 'Save';
+            } else {
+                savedItems.push(product);
+                btn.classList.add('saved');
+                btn.innerText = 'Saved';
+            }
+            localStorage.setItem('edire_saved_products', JSON.stringify(savedItems));
+        };
+    </script>
+</body>
+</html>

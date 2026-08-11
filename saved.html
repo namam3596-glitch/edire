@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Dire | Saved Products</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #FBFBFC; color: #333; }
+        a { text-decoration: none; color: #333; }
+        
+        #header { background-color: #d1220b; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 28px; font-weight: 700; color: white; }
+        .logo span { color: #D10024; }
+        .back-link { color: white; background: #D10024; padding: 10px 20px; border-radius: 4px; font-weight: bold; }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 15px; }
+        h2 { text-transform: uppercase; border-bottom: 2px solid #E4E7ED; padding-bottom: 15px; margin-top: 0; }
+        
+        #saved-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; margin-top: 30px; }
+        .product { background: white; border: 1px solid #E4E7ED; transition: 0.2s all; text-align: center; padding-bottom: 20px; position: relative; }
+        .product:hover { box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); border-color: #D10024; }
+        .product-img { width: 100%; height: 220px; padding: 20px; box-sizing: border-box; }
+        .product-img img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .remove-saved-btn { position: absolute; top: 10px; right: 10px; background: white; border: 1px solid #E4E7ED; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #D10024; transition: 0.2s; z-index: 5; }
+        .remove-saved-btn:hover { background: #D10024; color: white; }
+
+        .product-body { padding: 15px; }
+        .product-category { text-transform: uppercase; font-size: 12px; color: #8D99AE; margin-bottom: 5px; }
+        .product-name { text-transform: uppercase; font-size: 15px; font-weight: bold; margin: 5px 0 8px 0; }
+        .product-description { font-size: 13px; color: #666; margin-bottom: 12px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { color: #D10024; font-size: 18px; font-weight: bold; margin: 0; }
+        
+        .view-btn { background: #15161D; color: white; border: none; padding: 10px 20px; text-transform: uppercase; font-weight: 700; border-radius: 40px; margin-top: 10px; cursor: pointer; transition: 0.2s; opacity: 0; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .product:hover .view-btn { opacity: 1; bottom: 15px; }
+        .view-btn:hover { background: #D10024; }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <div class="logo">E-Dire <span>Wishlist</span></div>
+        <a href="index.html" class="back-link"><i class="fa fa-arrow-left"></i> Back to Storefront</a>
+    </div>
+
+    <div class="container">
+        <h2>Your Saved Products</h2>
+        <div id="saved-container"></div>
+    </div>
+
+    <script>
+        function loadSavedProducts() {
+            const container = document.getElementById('saved-container');
+            const savedItems = JSON.parse(localStorage.getItem('edire_saved_products')) || [];
+
+            container.innerHTML = '';
+
+            if (savedItems.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #8D99AE; padding: 50px;">You have no saved products yet. Browse the store and click the heart icon to save items!</p>';
+                return;
+            }
+
+            savedItems.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product';
+                const imageSource = (product.imageUrls && product.imageUrls.length > 0) 
+                    ? product.imageUrls[0] 
+                    : 'https://via.placeholder.com/250x200?text=No+Image';
+                
+                const descText = (product.description && product.description.trim() !== '') 
+                    ? product.description 
+                    : 'No description provided.';
+
+                card.innerHTML = `
+                    <button class="remove-saved-btn" onclick="removeSaved(${product.id})" title="Remove from Saved">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="product-img">
+                        <img src="${imageSource}" alt="${product.name}">
+                    </div>
+                    <div class="product-body">
+                        <p class="product-category">Electronics</p>
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${descText}</p>
+                        <div class="product-price">${product.price}</div>
+                    </div>
+                    <button class="view-btn" onclick="window.location.href='product.html?id=${product.id}'">
+                        <i class="fa fa-info-circle"></i> View Details
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        window.removeSaved = function(id) {
+            let savedItems = JSON.parse(localStorage.getItem('edire_saved_products')) || [];
+            savedItems = savedItems.filter(item => item.id !== id);
+            localStorage.setItem('edire_saved_products', JSON.stringify(savedItems));
+            loadSavedProducts();
+        }
+
+        loadSavedProducts();
+    </script>
+</body>
+</html>
