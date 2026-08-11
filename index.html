@@ -24,14 +24,23 @@
         .saved-link:hover { background: #333648; }
         .saved-link i { color: #D10024; }
 
-        /* Category Navigation Bar */
-        .category-nav { background: #1a1c23; padding: 10px 40px; display: flex; gap: 15px; overflow-x: auto; border-top: 1px solid rgba(255,255,255,0.1); }
+        /* Navigation Bar & Dropdowns */
+        .category-nav { background: #1a1c23; padding: 10px 40px; display: flex; gap: 15px; overflow-x: auto; border-top: 1px solid rgba(255,255,255,0.1); align-items: center; }
         .cat-btn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .cat-btn:hover, .cat-btn.active { background: #D10024; color: white; }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .dropbtn:hover, .dropdown.active .dropbtn { background: #D10024; color: white; }
+        .dropdown-content { display: none; position: absolute; background-color: #222431; min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 10; border-radius: 4px; overflow: hidden; top: 100%; left: 0; }
+        .dropdown-content button { color: #b1b1b1; padding: 10px 16px; text-decoration: none; display: block; background: none; border: none; width: 100%; text-align: left; font-family: inherit; font-size: 13px; cursor: pointer; }
+        .dropdown-content button:hover { background-color: #D10024; color: white; }
+        .dropdown:hover .dropdown-content { display: block; }
 
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         h2 { text-transform: uppercase; margin-bottom: 30px; font-size: 24px; border-bottom: 2px solid #E4E7ED; padding-bottom: 10px; }
 
+        /* Product Grid (2 columns on mobile) */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; }
         .product-card { background: white; border: 1px solid #E4E7ED; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
@@ -39,7 +48,7 @@
         .product-img-wrap { width: 100%; height: 200px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
         .product-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 10px; box-sizing: border-box; }
 
-        .save-icon-btn { position: absolute; top: 10px; right: 10px; background: white; border: none; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.15); color: #ccc; transition: 0.2s; }
+        .save-icon-btn { position: absolute; top: 10px; right: 10px; background: white; border: none; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.15); color: #ccc; transition: 0.2s; z-index: 2; }
         .save-icon-btn.saved { color: #D10024; }
         .save-icon-btn:hover { transform: scale(1.1); }
 
@@ -47,17 +56,40 @@
         .product-category { font-size: 12px; color: #8D99AE; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
         .product-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: #15161D; }
         .product-price { font-size: 18px; font-weight: 700; color: #D10024; margin-bottom: 10px; }
-        .product-desc { font-size: 13px; color: #666; margin-bottom: 15px; flex-grow: 1; line-height: 1.4; }
+        .product-desc { font-size: 13px; color: #666; margin-bottom: 15px; flex-grow: 1; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         
-        .seller-info { background: #FBFBFC; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px; border: 1px solid #E4E7ED; }
+        .card-actions { display: flex; gap: 10px; margin-top: auto; }
+        .detail-btn { background: #15161D; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; flex: 1; font-size: 12px; text-transform: uppercase; transition: 0.2s; }
+        .detail-btn:hover { background: #333648; }
+
+        .seller-info { background: #FBFBFC; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px; border: 1px solid #E4E7ED; margin-top: 10px; }
         .seller-info i { color: #28a745; }
 
         .empty-state { text-align: center; padding: 60px; color: #8D99AE; font-size: 16px; grid-column: 1 / -1; }
 
+        /* Modal Styles for View Details */
+        #productModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content { background-color: #fff; margin: auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .close-modal { color: #aaa; position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: #000; }
+        
+        .modal-img-container { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 10px; }
+        .modal-img-container img { width: 120px; height: 120px; object-fit: contain; border: 1px solid #E4E7ED; border-radius: 4px; background: #f8f9fa; cursor: pointer; }
+        .modal-main-img { width: 100%; height: 250px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid #E4E7ED; }
+        .modal-main-img img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Mobile View Tweaks (2 products side by side) */
         @media (max-width: 768px) {
             .header-top { padding: 15px 20px; flex-direction: column; align-items: stretch; }
             .search-bar { max-width: 100%; }
-            .category-nav { padding: 10px 20px; }
+            .category-nav { padding: 10px 15px; gap: 8px; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .product-body { padding: 12px; }
+            .product-title { font-size: 14px; }
+            .product-price { font-size: 15px; }
+            .product-img-wrap { height: 140px; }
+            .container { padding: 0 10px; margin: 20px auto; }
+            .detail-btn { padding: 8px; font-size: 11px; }
         }
     </style>
 </head>
@@ -67,29 +99,52 @@
         <div class="header-top">
             <div class="logo">E-Dire <span>Store</span></div>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search products by name, category, or description...">
+                <input type="text" id="searchInput" placeholder="Search products...">
                 <button class="search-btn"><i class="fa fa-search"></i></button>
             </div>
             <a href="saved.html" class="saved-link">
-                <i class="fa fa-heart"></i> Saved Products (<span id="savedCount">0</span>)
+                <i class="fa fa-heart"></i> Saved (<span id="savedCount">0</span>)
             </a>
         </div>
-        <!-- Category Navigation Menu -->
+        <!-- Category Navigation Menu with Dropdowns -->
         <div class="category-nav">
             <button class="cat-btn active" onclick="filterByCategory('All', this)">All Products</button>
-            <button class="cat-btn" onclick="filterByCategory('Laptops', this)">Laptops</button>
-            <button class="cat-btn" onclick="filterByCategory('Smartphones', this)">Smartphones</button>
+            
+            <!-- Electronics Dropdown -->
+            <div class="dropdown" id="elecDropdown">
+                <button class="dropbtn">Electronics <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <button onclick="filterByCategory('Electronics', this)">All Electronics</button>
+                    <button onclick="filterByCategory('Laptops', this)">Laptops</button>
+                    <button onclick="filterByCategory('Smartphones', this)">Smartphones</button>
+                </div>
+            </div>
+
+            <!-- Clothing Dropdown -->
+            <div class="dropdown" id="clothDropdown">
+                <button class="dropbtn">Clothing <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <button onclick="filterByCategory('Clothing (Male)', this)">Male Clothing</button>
+                    <button onclick="filterByCategory('Clothing (Female)', this)">Female Clothing</button>
+                </div>
+            </div>
+
             <button class="cat-btn" onclick="filterByCategory('Home Goods', this)">Home Goods</button>
-            <button class="cat-btn" onclick="filterByCategory('Clothing (Male)', this)">Clothing (Male)</button>
-            <button class="cat-btn" onclick="filterByCategory('Clothing (Female)', this)">Clothing (Female)</button>
-            <button class="cat-btn" onclick="filterByCategory('Electronics', this)">Electronics</button>
         </div>
     </div>
 
     <div class="container">
         <h2>Available Products</h2>
         <div class="product-grid" id="product-container">
-            <!-- Products will be loaded dynamically here -->
+            <!-- Products loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="productModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
         </div>
     </div>
 
@@ -137,8 +192,8 @@
                         <div class="product-title">${product.name}</div>
                         <div class="product-price">${product.price}</div>
                         <div class="product-desc">${product.description || 'No description provided.'}</div>
-                        <div class="seller-info">
-                            <i class="fa fa-phone-alt"></i> Call Seller: ${product.phone}
+                        <div class="card-actions">
+                            <button class="detail-btn" onclick="openDetails(${product.id})">View Details</button>
                         </div>
                     </div>
                 `;
@@ -146,7 +201,7 @@
             });
         }
 
-        // Combined filter logic for Category and Search Input
+        // Filters handler
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
@@ -166,9 +221,13 @@
         window.filterByCategory = function(category, btnElement) {
             currentCategory = category;
             
-            // Update active state on buttons
-            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
+            // Update active states
+            document.querySelectorAll('.cat-btn, .dropdown-content button').forEach(btn => btn.classList.remove('active'));
+            if (btnElement.classList.contains('cat-btn')) {
+                btnElement.classList.add('active');
+            } else {
+                btnElement.classList.add('active');
+            }
 
             applyFilters();
         };
@@ -176,6 +235,53 @@
         document.getElementById('searchInput').addEventListener('input', function() {
             applyFilters();
         });
+
+        // Modal View Details Logic
+        window.openDetails = function(id) {
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+
+            const modalBody = document.getElementById('modalBody');
+            const images = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://via.placeholder.com/200'];
+
+            let thumbsHtml = '';
+            images.forEach((img, index) => {
+                thumbsHtml += `<img src="${img}" onclick="changeMainImage('${img}')" alt="Thumbnail">`;
+            });
+
+            modalBody.innerHTML = `
+                <div class="modal-main-img" id="mainModalImgContainer">
+                    <img src="${images[0]}" id="activeModalImg" alt="${product.name}">
+                </div>
+                <div class="modal-img-container">
+                    ${thumbsHtml}
+                </div>
+                <div class="product-category" style="margin-bottom: 5px;">${product.category || 'General'}</div>
+                <h2 style="margin-top: 0; font-size: 22px; border:none; padding:0;">${product.name}</h2>
+                <div class="product-price" style="font-size: 22px; margin-bottom: 15px;">${product.price}</div>
+                <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">${product.description || 'No description provided.'}</p>
+                <div class="seller-info" style="font-size: 15px; padding: 15px;">
+                    <i class="fa fa-phone-alt"></i> Call Seller: <a href="tel:${product.phone}" style="color: #28a745; text-decoration: underline;">${product.phone}</a>
+                </div>
+            `;
+
+            document.getElementById('productModal').style.display = 'flex';
+        };
+
+        window.changeMainImage = function(src) {
+            document.getElementById('activeModalImg').src = src;
+        };
+
+        window.closeModal = function() {
+            document.getElementById('productModal').style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('productModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
 
         // Save / Unsave product logic
         window.toggleSave = function(id, event) {
@@ -200,7 +306,7 @@
             document.getElementById('savedCount').textContent = savedItems.length;
         }
 
-        // Load products on startup
+        // Initial fetch
         fetchProducts();
     </script>
 </body>
