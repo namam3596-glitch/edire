@@ -26,16 +26,17 @@
 
         /* Navigation Bar & Dropdowns */
         .category-nav { background: #1a1c23; padding: 10px 40px; display: flex; gap: 15px; overflow-x: auto; border-top: 1px solid rgba(255,255,255,0.1); align-items: center; }
-        .cat-btn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .cat-btn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
         .cat-btn:hover, .cat-btn.active { background: #D10024; color: white; }
 
         .dropdown { position: relative; display: inline-block; }
-        .dropbtn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .dropbtn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
         .dropbtn:hover, .dropdown.active .dropbtn { background: #D10024; color: white; }
-        .dropdown-content { display: none; position: absolute; background-color: #222431; min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 10; border-radius: 4px; overflow: hidden; top: 100%; left: 0; }
-        .dropdown-content button { color: #b1b1b1; padding: 10px 16px; text-decoration: none; display: block; background: none; border: none; width: 100%; text-align: left; font-family: inherit; font-size: 13px; cursor: pointer; }
+        
+        .dropdown-content { display: none; position: absolute; background-color: #222431; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.3); z-index: 10; border-radius: 4px; overflow: hidden; top: 110%; left: 0; border: 1px solid rgba(255,255,255,0.1); }
+        .dropdown-content.show { display: block; }
+        .dropdown-content button { color: #b1b1b1; padding: 10px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; background: none; border: none; width: 100%; text-align: left; font-family: inherit; font-size: 13px; cursor: pointer; }
         .dropdown-content button:hover { background-color: #D10024; color: white; }
-        .dropdown:hover .dropdown-content { display: block; }
 
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         h2 { text-transform: uppercase; margin-bottom: 30px; font-size: 24px; border-bottom: 2px solid #E4E7ED; padding-bottom: 10px; }
@@ -74,7 +75,7 @@
         .close-modal:hover { color: #000; }
         
         .modal-img-container { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 10px; }
-        .modal-img-container img { width: 120px; height: 120px; object-fit: contain; border: 1px solid #E4E7ED; border-radius: 4px; background: #f8f9fa; cursor: pointer; }
+        .modal-img-container img { width: 80px; height: 80px; object-fit: contain; border: 1px solid #E4E7ED; border-radius: 4px; background: #f8f9fa; cursor: pointer; }
         .modal-main-img { width: 100%; height: 250px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid #E4E7ED; }
         .modal-main-img img { width: 100%; height: 100%; object-fit: contain; }
 
@@ -106,30 +107,30 @@
                 <i class="fa fa-heart"></i> Saved (<span id="savedCount">0</span>)
             </a>
         </div>
-        <!-- Category Navigation Menu with Dropdowns -->
+        <!-- Category Navigation Menu with Click Dropdowns -->
         <div class="category-nav">
-            <button class="cat-btn active" onclick="filterByCategory('All', this)">All Products</button>
+            <button class="cat-btn active" onclick="filterByCategory('All', this)"><i class="fa fa-th"></i> All Products</button>
             
             <!-- Electronics Dropdown -->
-            <div class="dropdown" id="elecDropdown">
-                <button class="dropbtn">Electronics <i class="fa fa-caret-down"></i></button>
-                <div class="dropdown-content">
-                    <button onclick="filterByCategory('Electronics', this)">All Electronics</button>
-                    <button onclick="filterByCategory('Laptops', this)">Laptops</button>
-                    <button onclick="filterByCategory('Smartphones', this)">Smartphones</button>
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('elecContent', event)"><i class="fa fa-laptop"></i> Electronics <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content" id="elecContent">
+                    <button onclick="filterByCategory('Electronics', this)"><i class="fa fa-plug"></i> All Electronics</button>
+                    <button onclick="filterByCategory('Laptops', this)"><i class="fa fa-laptop"></i> Laptops</button>
+                    <button onclick="filterByCategory('Smartphones', this)"><i class="fa fa-mobile-alt"></i> Smartphones</button>
                 </div>
             </div>
 
             <!-- Clothing Dropdown -->
-            <div class="dropdown" id="clothDropdown">
-                <button class="dropbtn">Clothing <i class="fa fa-caret-down"></i></button>
-                <div class="dropdown-content">
-                    <button onclick="filterByCategory('Clothing (Male)', this)">Male Clothing</button>
-                    <button onclick="filterByCategory('Clothing (Female)', this)">Female Clothing</button>
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('clothContent', event)"><i class="fa fa-tshirt"></i> Clothing <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content" id="clothContent">
+                    <button onclick="filterByCategory('Clothing (Male)', this)"><i class="fa fa-male"></i> Male Clothing</button>
+                    <button onclick="filterByCategory('Clothing (Female)', this)"><i class="fa fa-female"></i> Female Clothing</button>
                 </div>
             </div>
 
-            <button class="cat-btn" onclick="filterByCategory('Home Goods', this)">Home Goods</button>
+            <button class="cat-btn" onclick="filterByCategory('Home Goods', this)"><i class="fa fa-home"></i> Home Goods</button>
         </div>
     </div>
 
@@ -201,6 +202,26 @@
             });
         }
 
+        // Toggle dropdown click handler
+        window.toggleDropdown = function(contentId, event) {
+            event.stopPropagation();
+            // Close any other open dropdowns first
+            document.querySelectorAll('.dropdown-content').forEach(content => {
+                if (content.id !== contentId) {
+                    content.classList.remove('show');
+                }
+            });
+            const content = document.getElementById(contentId);
+            content.classList.toggle('show');
+        };
+
+        // Close dropdowns when clicking anywhere else on the page
+        window.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-content').forEach(content => {
+                content.classList.remove('show');
+            });
+        });
+
         // Filters handler
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -223,11 +244,10 @@
             
             // Update active states
             document.querySelectorAll('.cat-btn, .dropdown-content button').forEach(btn => btn.classList.remove('active'));
-            if (btnElement.classList.contains('cat-btn')) {
-                btnElement.classList.add('active');
-            } else {
-                btnElement.classList.add('active');
-            }
+            btnElement.classList.add('active');
+
+            // Close dropdown after selection
+            document.querySelectorAll('.dropdown-content').forEach(content => content.classList.remove('show'));
 
             applyFilters();
         };
@@ -245,12 +265,12 @@
             const images = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls : ['https://via.placeholder.com/200'];
 
             let thumbsHtml = '';
-            images.forEach((img, index) => {
+            images.forEach((img) => {
                 thumbsHtml += `<img src="${img}" onclick="changeMainImage('${img}')" alt="Thumbnail">`;
             });
 
             modalBody.innerHTML = `
-                <div class="modal-main-img" id="mainModalImgContainer">
+                <div class="modal-main-img">
                     <img src="${images[0]}" id="activeModalImg" alt="${product.name}">
                 </div>
                 <div class="modal-img-container">
