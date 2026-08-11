@@ -104,6 +104,11 @@
                 <textarea name="description" placeholder="Enter product details, specs, or features..." rows="3"></textarea>
             </div>
             <div class="form-group">
+                <label>Display Order (Priority Number)</label>
+                <input type="number" name="displayOrder" value="0" placeholder="e.g., 1 for top placement">
+                <span class="form-hint">Lower numbers appear first on the storefront.</span>
+            </div>
+            <div class="form-group">
                 <label>Product Images (Upload up to 3 images)</label>
                 <input type="file" name="productImages" accept="image/*" multiple required>
             </div>
@@ -167,7 +172,7 @@
                                     <img src="${imageSource}" alt="${product.name}">
                                     <div>
                                         <strong style="text-transform: uppercase; display: block;">${product.name}</strong>
-                                        <span style="font-size: 11px; color: #8D99AE;">Category: ${product.category} | Phone: ${product.phone}</span><br>
+                                        <span style="font-size: 11px; color: #8D99AE;">Category: ${product.category} | Priority: ${product.displayOrder || 0} | Phone: ${product.phone}</span><br>
                                         <span style="font-size: 12px; color: #D10024; font-weight: bold;">${product.price}</span>
                                     </div>
                                 </div>
