@@ -3,92 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Dire - Admin Portal</title>
+    <title>E-Dire | Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { color: #ff6600; margin-top: 0; text-align: center; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        input[type="text"], input[type="number"], input[type="password"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        input[type="file"] { padding: 5px 0; }
-        button { background-color: #ff6600; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 100%; }
-        button:hover { background-color: #e55b00; }
-        #responseMessage { margin-top: 15px; font-weight: bold; text-align: center; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #FBFBFC; color: #333; }
+        a { text-decoration: none; color: #333; }
+        
+        #header { background: linear-gradient(135deg, #15161D 0%, #222431 100%); padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .logo { font-size: 28px; font-weight: 700; color: white; }
+        .logo span { color: #D10024; }
+        .back-link { color: white; background: #D10024; padding: 10px 20px; border-radius: 4px; font-weight: bold; transition: 0.2s; }
+        .back-link:hover { background: #b0001d; }
+
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #E4E7ED; }
+        h2 { text-transform: uppercase; border-bottom: 2px solid #E4E7ED; padding-bottom: 15px; margin-top: 0; font-size: 20px; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #E4E7ED; border-radius: 4px; font-family: inherit; background: white; }
+        .form-hint { font-size: 12px; color: #8D99AE; margin-top: 4px; display: block; }
+        
+        .submit-btn { background: #28a745; color: white; border: none; padding: 12px 20px; font-weight: bold; width: 100%; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
+        .submit-btn:hover { background: #218838; }
+
+        #login-screen { max-width: 400px; margin: 80px auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; border: 1px solid #E4E7ED; }
+        #admin-panel { display: none; }
+        .login-error { color: #D10024; font-size: 13px; margin-top: 10px; display: none; }
+
+        .product-management-list { margin-top: 50px; }
+        .admin-product-item { padding: 15px; border-bottom: 1px solid #E4E7ED; display: flex; flex-direction: column; gap: 10px; }
+        .admin-product-top { display: flex; justify-content: space-between; align-items: center; }
+        .admin-product-item img { width: 60px; height: 60px; object-fit: contain; }
+        
+        .edit-box { display: none; background: #f8f9fa; padding: 10px; border-radius: 4px; margin-top: 5px; }
+        .edit-box textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 8px; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        .edit-btn { background: #ffc107; color: #333; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .save-btn { background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        .delete-btn { background: #D10024; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        @media (max-width: 600px) {
+            .container, #login-screen { margin: 20px 10px; padding: 20px; }
+            .admin-product-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>E-Dire Admin Portal</h2>
-        <form id="productForm">
-            <div class="form-group">
-                <label for="title">Product Title:</label>
-                <input type="text" id="title" name="title" required>
+
+    <div id="header">
+        <div class="logo">E-Dire <span>Admin Portal</span></div>
+        <a href="index.html" class="back-link"><i class="fa fa-arrow-left"></i> Back to Storefront</a>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <h2>Admin Login</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Enter your admin password to access the dashboard.</p>
+        <form id="login-form">
+            <div class="form-group" style="text-align: left;">
+                <label>Password</label>
+                <input type="password" id="admin-password-input" placeholder="Enter password..." required>
             </div>
-            <div class="form-group">
-                <label for="price">Price:</label>
-                <input type="text" id="price" name="price" required>
-            </div>
-            <div class="form-group">
-                <label for="category">Category:</label>
-                <input type="text" id="category" name="category" required>
-            </div>
-            <div class="form-group">
-                <label for="sellerPhone">Seller Phone Number:</label>
-                <input type="text" id="sellerPhone" name="sellerPhone" required>
-            </div>
-            <div class="form-group">
-                <label for="displayOrder">Display Order (Priority number):</label>
-                <input type="number" id="displayOrder" name="displayOrder" value="0">
-            </div>
-            <div class="form-group">
-                <label for="imageFile">Product Image:</label>
-                <input type="file" id="imageFile" name="image" accept="image/*" required>
-            </div>
-            <div class="form-group">
-                <label for="adminPassword">Admin Password:</label>
-                <input type="password" id="adminPassword" name="password" required placeholder="Enter admin password">
-            </div>
-            <button type="submit">Upload Product</button>
+            <button type="submit" class="submit-btn">Login</button>
+            <div class="login-error" id="login-error-msg">Incorrect password. Please try again.</div>
         </form>
-        <div id="responseMessage"></div>
+    </div>
+
+    <!-- PROTECTED ADMIN DASHBOARD -->
+    <div id="admin-panel" class="container">
+        <h2>Upload a New Product</h2>
+        <form id="upload-form">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" name="name" placeholder="Enter product name..." required>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category">
+                    <option value="">Auto-Detect from Name / Description</option>
+                    <option value="Laptops">Laptops</option>
+                    <option value="Smartphones">Smartphones</option>
+                    <option value="Home Goods">Home Goods</option>
+                    <option value="Clothing (Male)">Clothing (Male)</option>
+                    <option value="Clothing (Female)">Clothing (Female)</option>
+                    <option value="Electronics">Electronics</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Product Price (e.g., $299.00 or 15,000 ETB)</label>
+                <input type="text" name="price" placeholder="Enter product price..." required>
+            </div>
+            <div class="form-group">
+                <label>Seller Phone Number</label>
+                <input type="text" name="phone" placeholder="e.g., +251 900 00 00 00" required>
+            </div>
+            <div class="form-group">
+                <label>Product Description (Optional)</label>
+                <textarea name="description" placeholder="Enter product details, specs, or features..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Product Images (Upload up to 3 images)</label>
+                <input type="file" name="productImages" accept="image/*" multiple required>
+            </div>
+            <button type="submit" class="submit-btn">Publish to Catalog</button>
+        </form>
+
+        <div class="product-management-list">
+            <h2>Manage & Edit Products</h2>
+            <div id="admin-product-container"></div>
+        </div>
     </div>
 
     <script>
-        document.getElementById('productForm').addEventListener('submit', async function(e) {
+        const storedPassword = sessionStorage.getItem('edire_admin_pass');
+        if (storedPassword) verifyAndUnlock(storedPassword);
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const msgDiv = document.getElementById('responseMessage');
-            msgDiv.style.color = '#555';
-            msgDiv.textContent = 'Uploading product...';
+            verifyAndUnlock(document.getElementById('admin-password-input').value);
+        });
 
-            const formData = new FormData();
-            formData.append('title', document.getElementById('title').value);
-            formData.append('price', document.getElementById('price').value);
-            formData.append('category', document.getElementById('category').value);
-            formData.append('sellerPhone', document.getElementById('sellerPhone').value);
-            formData.append('displayOrder', document.getElementById('displayOrder').value);
-            formData.append('image', document.getElementById('imageFile').files[0]);
-            formData.append('password', document.getElementById('adminPassword').value);
-
-            try {
-                const response = await fetch('/api/products', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    msgDiv.style.color = 'green';
-                    msgDiv.textContent = 'Product uploaded successfully!';
-                    document.getElementById('productForm').reset();
+        function verifyAndUnlock(password) {
+            fetch('http://localhost:3000/api/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    sessionStorage.setItem('edire_admin_pass', password);
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('admin-panel').style.display = 'block';
+                    loadAdminProducts();
                 } else {
-                    msgDiv.style.color = 'red';
-                    msgDiv.textContent = result.error || 'Failed to upload product. Check your password.';
+                    document.getElementById('login-error-msg').style.display = 'block';
+                    sessionStorage.removeItem('edire_admin_pass');
                 }
-            } catch (err) {
-                msgDiv.style.color = 'red';
-                msgDiv.textContent = 'Network error occurred while uploading.';
+            });
+        }
+
+        function loadAdminProducts() {
+            fetch('http://localhost:3000/api/products')
+                .then(response => response.json())
+                .then(products => {
+                    const container = document.getElementById('admin-product-container');
+                    if (products.length === 0) {
+                        container.innerHTML = '<p style="color: #8D99AE; text-align: center; padding: 20px;">No products uploaded yet.</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = '';
+                    products.forEach(product => {
+                        const item = document.createElement('div');
+                        item.className = 'admin-product-item';
+                        const imageSource = (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : 'https://via.placeholder.com/60';
+
+                        item.innerHTML = `
+                            <div class="admin-product-top">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <img src="${imageSource}" alt="${product.name}">
+                                    <div>
+                                        <strong style="text-transform: uppercase; display: block;">${product.name}</strong>
+                                        <span style="font-size: 11px; color: #8D99AE;">Category: ${product.category} | Phone: ${product.phone}</span><br>
+                                        <span style="font-size: 12px; color: #D10024; font-weight: bold;">${product.price}</span>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="edit-btn" onclick="toggleEdit(${product.id})"><i class="fa fa-edit"></i> Edit</button>
+                                    <button class="delete-btn" onclick="deleteProduct(${product.id})"><i class="fa fa-trash"></i> Delete</button>
+                                </div>
+                            </div>
+                            <div class="edit-box" id="edit-box-${product.id}">
+                                <label style="font-size: 12px; font-weight: bold;">Edit Description:</label>
+                                <textarea id="edit-desc-${product.id}" rows="2">${product.description || ''}</textarea>
+                                <button class="save-btn" onclick="saveDescription(${product.id})">Save Changes</button>
+                            </div>
+                        `;
+                        container.appendChild(item);
+                    });
+                });
+        }
+
+        window.toggleEdit = function(id) {
+            const box = document.getElementById(`edit-box-${id}`);
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.saveDescription = function(id) {
+            const newDescription = document.getElementById(`edit-desc-${id}`).value;
+            const password = sessionStorage.getItem('edire_admin_pass');
+
+            fetch(`http://localhost:3000/api/products/${id}`, {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'admin-password': password 
+                },
+                body: JSON.stringify({ description: newDescription })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                loadAdminProducts();
+            })
+            .catch(err => alert('Failed to update description.'));
+        }
+
+        window.deleteProduct = function(id) {
+            const password = sessionStorage.getItem('edire_admin_pass');
+            if (confirm("Are you sure you want to delete this product?")) {
+                fetch(`http://localhost:3000/api/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'admin-password': password }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    loadAdminProducts();
+                });
             }
+        };
+
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            const password = sessionStorage.getItem('edire_admin_pass');
+            const formData = new FormData(this);
+
+            fetch('http://localhost:3000/api/products', {
+                method: 'POST',
+                headers: { 'admin-password': password },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Success! ' + data.message);
+                window.location.reload(); 
+            });
         });
     </script>
 </body>
