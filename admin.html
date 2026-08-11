@@ -126,7 +126,7 @@
         });
 
         function verifyAndUnlock(password) {
-            fetch('http://localhost:3000/api/admin-login', {
+            fetch('/api/admin-login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password })
@@ -146,7 +146,7 @@
         }
 
         function loadAdminProducts() {
-            fetch('http://localhost:3000/api/products')
+            fetch('/api/products')
                 .then(response => response.json())
                 .then(products => {
                     const container = document.getElementById('admin-product-container');
@@ -196,7 +196,7 @@
             const newDescription = document.getElementById(`edit-desc-${id}`).value;
             const password = sessionStorage.getItem('edire_admin_pass');
 
-            fetch(`http://localhost:3000/api/products/${id}`, {
+            fetch(`/api/products/${id}`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -215,7 +215,7 @@
         window.deleteProduct = function(id) {
             const password = sessionStorage.getItem('edire_admin_pass');
             if (confirm("Are you sure you want to delete this product?")) {
-                fetch(`http://localhost:3000/api/products/${id}`, {
+                fetch(`/api/products/${id}`, {
                     method: 'DELETE',
                     headers: { 'admin-password': password }
                 })
@@ -232,7 +232,7 @@
             const password = sessionStorage.getItem('edire_admin_pass');
             const formData = new FormData(this);
 
-            fetch('http://localhost:3000/api/products', {
+            fetch('/api/products', {
                 method: 'POST',
                 headers: { 'admin-password': password },
                 body: formData
