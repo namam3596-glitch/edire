@@ -7,19 +7,18 @@ const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Admin Password Constant
-const ADMIN_PASSWORD = '#233038@MAN#';
+const ADMIN_PASSWORD = '#233830@MAN#';
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (HTML, CSS, JS, and uploads) from the root directory
+// Serve static files from root directory
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Configure Multer for product image uploads
+// Configure Multer for multiple product image uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = path.join(__dirname, 'uploads');
@@ -40,6 +39,25 @@ if (!fs.existsSync(productsFile)) {
     fs.writeFileSync(productsFile, JSON.stringify([]));
 }
 
+// Explicit route for homepage and admin portal
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Admin Login Endpoint
+app.post('/api/admin-login', (req, res) => {
+    const { password } = req.body;
+    if (password === ADMIN_PASSWORD) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'Incorrect password' });
+    }
+});
+
 // API Endpoint: Get all products
 app.get('/api/products', (req, res) => {
     fs.readFile(productsFile, 'utf8', (err, data) => {
@@ -55,17 +73,16 @@ app.get('/api/products', (req, res) => {
     });
 });
 
-// API Endpoint: Add a new product (Protected with Password Check)
-app.post('/api/products', upload.single('image'), (req, res) => {
-    const providedPassword = req.body.password || req.headers['x-admin-password'];
-
-    if (providedPassword !== ADMIN_PASSWORD) {
-        return res.status(403).json({ error: 'Unauthorized: Incorrect admin password' });
+// API Endpoint: Add a new product (Protected with header password)
+app.post('/api/products', upload.array('productImages', 3), (req, res) => {
+    const password = req.headers['admin-password'];
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(403).json({ success: false, message: 'Unauthorized: Incorrect admin password' });
     }
 
     fs.readFile(productsFile, 'utf8', (err, data) => {
         if (err) {
-            return res.status(500).json({ error: 'Failed to read products' });
+            return res.status(500).json({ success: false, message: 'Failed to read products' });
         }
         
         let products = [];
@@ -75,30 +92,81 @@ app.post('/api/products', upload.single('image'), (req, res) => {
             products = [];
         }
         
+        const imageUrls = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+
         const newProduct = {
             id: Date.now(),
-            title: req.body.title || 'Untitled',
+            name: req.body.name || 'Untitled',
             price: req.body.price || '0',
             category: req.body.category || 'General',
-            sellerPhone: req.body.sellerPhone || '',
-            displayOrder: parseInt(req.body.displayOrder) || 0,
-            imageUrl: req.file ? `/uploads/${req.file.filename}` : (req.body.imageUrl || '')
+            phone: req.body.phone || '',
+            description: req.body.description || '',
+            imageUrls: imageUrls
         };
 
         products.push(newProduct);
 
         fs.writeFile(productsFile, JSON.stringify(products, null, 2), (writeErr) => {
             if (writeErr) {
-                return res.status(500).json({ error: 'Failed to save product' });
+                return res.status(500).json({ success: false, message: 'Failed to save product' });
             }
-            res.json({ success: true, product: newProduct });
+            res.json({ success: true, message: 'Product added successfully!', product: newProduct });
+        });
+    });
+});
+
+// API Endpoint: Update product description (Protected)
+app.put('/api/products/:id', (req, res) => {
+    const password = req.headers['admin-password'];
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const productId = Number(req.params.id);
+    const { description } = req.body;
+
+    fs.readFile(productsFile, 'utf8', (err, data) => {
+        if (err) return res.status(500).json({ success: false, message: 'Failed to read products' });
+
+        let products = JSON.parse(data || '[]');
+        const product = products.find(p => p.id === productId);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        product.description = description;
+
+        fs.writeFile(productsFile, JSON.stringify(products, null, 2), (writeErr) => {
+            if (writeErr) return res.status(500).json({ success: false, message: 'Failed to save update' });
+            res.json({ success: true, message: 'Product updated successfully!' });
+        });
+    });
+});
+
+// API Endpoint: Delete product (Protected)
+app.delete('/api/products/:id', (req, res) => {
+    const password = req.headers['admin-password'];
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const productId = Number(req.params.id);
+
+    fs.readFile(productsFile, 'utf8', (err, data) => {
+        if (err) return res.status(500).json({ success: false, message: 'Failed to read products' });
+
+        let products = JSON.parse(data || '[]');
+        const filteredProducts = products.filter(p => p.id !== productId);
+
+        fs.writeFile(productsFile, JSON.stringify(filteredProducts, null, 2), (writeErr) => {
+            if (writeErr) return res.status(500).json({ success: false, message: 'Failed to delete product' });
+            res.json({ success: true, message: 'Product deleted successfully!' });
         });
     });
 });
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`E-Dire server running smoothly on port ${PORT}`);
+    console.log(`E-Dire server running on port ${PORT}`);
 });
-  
- 
