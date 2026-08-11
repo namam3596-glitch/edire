@@ -67,7 +67,7 @@
         .detail-btn { background: #15161D; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; flex: 1; font-size: 12px; text-transform: uppercase; transition: 0.2s; }
         .detail-btn:hover { background: #333648; }
 
-        .seller-info { background: #FBFBFC; padding: 10px; border-radius: 4px; font-size: 13px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px; border: 1px solid #E4E7ED; margin-top: 10px; }
+        .seller-info { background: #FBFBFC; padding: 8px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px; border: 1px solid #E4E7ED; margin-bottom: 12px; }
         .seller-info i { color: #28a745; }
 
         .empty-state { text-align: center; padding: 60px; color: #8D99AE; font-size: 16px; grid-column: 1 / -1; }
@@ -95,6 +95,7 @@
             .product-img-wrap { height: 140px; }
             .container { padding: 0 10px; margin: 20px auto; }
             .detail-btn { padding: 8px; font-size: 11px; }
+            .seller-info { font-size: 11px; padding: 6px; }
         }
     </style>
 </head>
@@ -201,6 +202,9 @@
                         <div class="product-title">${product.name}</div>
                         <div class="product-price">${product.price}</div>
                         <div class="product-desc">${product.description || 'No description provided.'}</div>
+                        <div class="seller-info">
+                            <i class="fa fa-phone-alt"></i> Call: <a href="tel:${product.phone}" style="color: #28a745; text-decoration: underline;">${product.phone}</a>
+                        </div>
                         <div class="card-actions">
                             <button class="detail-btn" onclick="openDetails(${product.id})">View Details</button>
                         </div>
