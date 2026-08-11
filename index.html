@@ -10,7 +10,7 @@
         body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: #FBFBFC; color: #333; }
         a { text-decoration: none; color: inherit; }
         
-        #header { background: linear-gradient(135deg, #15161D 0%, #222431 100%); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        #header { background: linear-gradient(135deg, #15161D 0%, #222431 100%); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: relative; z-index: 1000; }
         .header-top { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
         .logo { font-size: 28px; font-weight: 700; color: white; }
         .logo span { color: #D10024; }
@@ -24,8 +24,8 @@
         .saved-link:hover { background: #333648; }
         .saved-link i { color: #D10024; }
 
-        /* Navigation Bar & Dropdowns */
-        .category-nav { background: #1a1c23; padding: 10px 40px; display: flex; gap: 15px; overflow-x: auto; border-top: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        /* Navigation Bar & Dropdowns (Wrapped to prevent clipping) */
+        .category-nav { background: #1a1c23; padding: 12px 40px; display: flex; gap: 12px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.1); align-items: center; position: relative; }
         .cat-btn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
         .cat-btn:hover, .cat-btn.active { background: #D10024; color: white; }
 
@@ -33,12 +33,12 @@
         .dropbtn { background: transparent; border: none; color: #b1b1b1; padding: 8px 16px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
         .dropbtn:hover, .dropdown.active .dropbtn { background: #D10024; color: white; }
         
-        .dropdown-content { display: none; position: absolute; background-color: #222431; min-width: 180px; box-shadow: 0px 8px 16px rgba(0,0,0,0.3); z-index: 10; border-radius: 4px; overflow: hidden; top: 110%; left: 0; border: 1px solid rgba(255,255,255,0.1); }
+        .dropdown-content { display: none; position: absolute; background-color: #222431; min-width: 180px; box-shadow: 0px 8px 20px rgba(0,0,0,0.4); z-index: 9999; border-radius: 4px; overflow: hidden; top: 110%; left: 0; border: 1px solid rgba(255,255,255,0.1); }
         .dropdown-content.show { display: block; }
         .dropdown-content button { color: #b1b1b1; padding: 10px 16px; text-decoration: none; display: flex; align-items: center; gap: 8px; background: none; border: none; width: 100%; text-align: left; font-family: inherit; font-size: 13px; cursor: pointer; }
         .dropdown-content button:hover { background-color: #D10024; color: white; }
 
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; position: relative; z-index: 1; }
         h2 { text-transform: uppercase; margin-bottom: 30px; font-size: 24px; border-bottom: 2px solid #E4E7ED; padding-bottom: 10px; }
 
         /* Product Grid (2 columns on mobile) */
@@ -69,7 +69,7 @@
         .empty-state { text-align: center; padding: 60px; color: #8D99AE; font-size: 16px; grid-column: 1 / -1; }
 
         /* Modal Styles for View Details */
-        #productModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        #productModal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
         .modal-content { background-color: #fff; margin: auto; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .close-modal { color: #aaa; position: absolute; top: 15px; right: 20px; font-size: 28px; font-weight: bold; cursor: pointer; }
         .close-modal:hover { color: #000; }
