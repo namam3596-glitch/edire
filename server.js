@@ -7,7 +7,7 @@ const multer = require('multer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const ADMIN_PASSWORD = 'mypassword123';
+const ADMIN_PASSWORD = '#233038@MAN#';
 
 // Middleware
 app.use(cors());
@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Configure Multer for multiple product image uploads
+// Configure Multer for up to 4 product image uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadDir = path.join(__dirname, 'uploads');
@@ -39,7 +39,7 @@ if (!fs.existsSync(productsFile)) {
     fs.writeFileSync(productsFile, JSON.stringify([]));
 }
 
-// Explicit route for homepage and admin portal
+// Explicit routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -74,8 +74,8 @@ app.get('/api/products', (req, res) => {
     });
 });
 
-// API Endpoint: Add a new product (Protected with header password)
-app.post('/api/products', upload.array('productImages', 3), (req, res) => {
+// API Endpoint: Add a new product (Up to 4 images)
+app.post('/api/products', upload.array('productImages', 4), (req, res) => {
     const password = req.headers['admin-password'];
     if (password !== ADMIN_PASSWORD) {
         return res.status(403).json({ success: false, message: 'Unauthorized: Incorrect admin password' });
